@@ -15,7 +15,7 @@ func GetWindow() Window {
 }
 
 // Underlying is implemented by all DOM elements. It is used to
-// interface the underlying js.Value.
+// access the underlying js.Value.
 type Underlyer interface {
 	Underlying() js.Value
 	IsUndefined() bool
@@ -47,6 +47,7 @@ type Style interface {
 // HTMLElement represents an HTML element in a DOM
 type HTMLElement interface {
 	Underlyer
+	EventTarget
 	EventSource
 	Queryer
 	ID() string
@@ -75,6 +76,7 @@ type Event interface {
 // Window represents the window
 type Window interface {
 	Underlyer
+	EventTarget
 	EventSource
 	Document() Document
 }
@@ -82,6 +84,7 @@ type Window interface {
 // Document represents the DOM root element
 type Document interface {
 	Underlyer
+	EventTarget
 	EventSource
 	Queryer
 	GetElementByID(id string) HTMLElement
@@ -249,11 +252,15 @@ func Undefined() js.Value {
 	return js.Undefined()
 }
 
-// EventSource is implemented by all elements that distribute events
+// EventSource is implemented by all elements that dispatch events
 type EventSource interface {
+	DispatchEvent(ev Event)
+}
+
+// EventTarget is implemented by all elements that receive events
+type EventTarget interface {
 	AddEventListener(event string, useCapture bool, function func(Event)) js.Func
 	RemoveEventListener(event string, useCapture bool, cb js.Func)
-	DispatchEvent(ev Event)
 }
 
 func (d *dom) AddEventListener(event string, useCapture bool, function func(Event)) js.Func {
