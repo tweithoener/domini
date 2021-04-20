@@ -2,17 +2,19 @@
 
 This is an unstable alpha version. No guarantees whatsoever.
 
-A minimalistiv package to access the web pages DOM from a go web app when using WebAssembly (wasm).
+A minimalistiv package to access the web page's DOM from a go web app when using WebAssembly (wasm).
 With this package the following cumbersome, verbose line of code
 
 ```golang
-  js.Global().Call("getElementById", "msg").Get("style").Call("setProperty", "display", "block", "") 
+  doc := js.Global().Get("document)
+  doc.Call("getElementById", "msg").Get("style").Call("setProperty", "display", "block", "") 
 ```
 
 becomes a lot more tidy:
 
 ```golang
-  domini.GetWindow().GetElementById("msg").Style().SetProperty("display", "block", "")
+  doc := domini.GetWindow().Document()
+  doc.GetElementById("msg").Style().SetProperty("display", "block", "")
 ```
 
 As you can see, this is a little shorter, much easier to read, and hell of a lot faster to type as most of the typing can be done by the
